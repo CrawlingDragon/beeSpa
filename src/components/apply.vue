@@ -17,12 +17,12 @@
 				</cube-form-item>
 				<!-- 生日 时间date-picker -->
 				<cube-form-item :field="fields[5]">
-					<cube-button @click="showDatePicker">{{model.dateValue|| '生日'}}</cube-button>
+					<cube-button @click="showDatePicker" :class="{active:isBlack}">{{model.dateValue||'生日'}}</cube-button>
 					<i class="cube-select-icon"></i>
 					<date-picker ref="datePicker" :min="[2008, 8, 8]" :max="[2020, 10, 20]" @select="dateSelectHandler"></date-picker>
 				</cube-form-item>
 				<!-- 所在地 -->
-				<div style="position:relative">
+				<div style="position:relative" :class="{black: model.pcaValue.length}">
 					<cube-form-item :field="fields[6]"></cube-form-item>
 					<i class="cube-select-icon"></i>
 				</div>
@@ -30,7 +30,7 @@
 				<!-- 级别选择 picker -->
 				<cube-form-item :field="fields[7]"></cube-form-item>
 				<!-- 善长-下拉多选 -->
-				<cube-form-item :field="fields[8]">
+				<cube-form-item :field="fields[8]" :class="{black: model.checkboxGroupVal}">
 					<cube-button @click="getCheckData">{{model.checkboxGroupVal || '擅长'}}</cube-button>
 					<i class="cube-select-icon"></i>
 				</cube-form-item>
@@ -43,7 +43,7 @@
 			</cube-form-group>
 			<cube-form-group>
 				<div class="sub-box">
-					<cube-button type="submit">提交申请</cube-button>
+					<cube-button type="submit" :class="{black:!valid}">提交申请</cube-button>
 				</div>
 			</cube-form-group>
 			<GoodAt ref="checkboxGroups" @confimSure="makeSure" :getOptions="op"></GoodAt>
@@ -69,6 +69,10 @@ const PCA = {
 			default() {
 				return []
 			}
+		},
+		pcaBalck:{
+			type:String,
+			default:''
 		}
 	},
 	data() {
@@ -109,12 +113,13 @@ export default {
 	data() {
 		let that = this
 		return {
+			isBlack:false,
 			action:{
 				target:`${root}/getskillAndtype`,
 				 prop: 'base64Value'
 			},
 			validity: {},
-			valid: undefined,
+			valid: false,
 			userTypes :[],
 			userPostType:[],
 			skills:[],
@@ -211,7 +216,7 @@ export default {
 					modelKey: 'pcaValue',
 					label: ' ',
 					rules: {
-						required: true
+						required: false
 					},
 					messages: {
 						required: '请选择'
@@ -264,7 +269,8 @@ export default {
 					modelKey: 'textareaValue',
 					label: ' ',
 					props: {
-						placeholder: '简介'
+						placeholder: '简介',
+						maxlength:400
 					},
 					rules: {
 						required: false
@@ -344,13 +350,13 @@ export default {
 				mobile: options.inputValue, //手机号
 				nickname: options.inputName, //名字
 				idcard: options.inputCard, //身份证
-				sex: options.selectValue == '男' ? 'm' : 'f', //性别
+				sex: options.selectValue == '' ? '' : options.selectValue === '男' ? 'm' : 'f', //性别
 				birthday: options.dateValue, //生日
 				province: options.pcaValue[0], //省
 				city: options.pcaValue[1], //市
 				county: options.pcaValue[2], //镇
 				usertype: this.getLevelValue(options.levelValue,this.userTypes), //级别
-				skill: options.checkboxGroupVal instanceof Array ? this.skillsPost.join(',') : '', //需要做成 1， 2，3 格式 --- 善长
+				skill: this.skillsPost.join(','), //需要做成 1， 2，3 格式 --- 善长
 				company: options.jobAds, //单位
 				duty: options.jobTitle, //职称
 				introduction: options.textareaValue //简介
@@ -363,7 +369,7 @@ export default {
 				})
 		},
 		submitHandler(e) {
-			 e.preventDefault()
+			e.preventDefault()
 			this.postData(`${root}/expertapply`, this.model)
 				.then(res => {
 					if (res.code == 200) {
@@ -380,6 +386,7 @@ export default {
 		validateHandler(result) {
 			this.validity = result.validity
 			this.valid = result.valid
+			this.subBlack = true
 		},
 		showDatePicker() {
 			this.$refs.datePicker.show()
@@ -398,13 +405,18 @@ export default {
 				let i = this.opCopy.findIndex(val => val == item)
 				this.skillsPost.push(i)
 			})
-			this.model.checkboxGroupVal = data
+			this.model.checkboxGroupVal = data.join("、")
 		}
 	},
 	watch:{
 		'model.levelValue':function (newVal,oldVal){
 				let i = this.userTypes.findIndex((v) => v == newVal)
 				// return this.userPostType[i]
+		},
+		'valid'(newVal,oldVal){
+			if(newVal === undefined) {
+				this.valid = true
+			}
 		}
 	},
 	components: {
@@ -447,7 +459,7 @@ bg-img($url)
 	width 20px
 	height 22px
 	bg-img('../src/assets/images/level')
-.checkboxGroupValue
+.checkboxGroupVal
 	width 20px
 	height 22px
 	bg-img('../src/assets/images/goodat')
@@ -469,6 +481,9 @@ bg-img($url)
 		color #cfcfcf !important
 		white-space normal !important
 		line-height inherit !important
+		padding-right 0.44rem
+		&.active
+			color #282828 !important
 .sub-box
 	background #EBEAE0
 	padding 30px 0
@@ -483,4 +498,16 @@ bg-img($url)
 		line-height 40px
 .cube-input_active
 	border-bottom 1px solid #FDC705
+.cube-select-icon
+	width 14px
+	height 9px
+	border 0 solid transparent !important
+	bg-img('../src/assets/images/select')
+.black
+	.cube-validator-content
+		.cube-btn
+			color #282828 !important
+.black
+	background rgba(187, 187, 187, 1) !important
+	color #282828 !important
 </style>

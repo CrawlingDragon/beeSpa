@@ -2,14 +2,14 @@
 <template>
   <div class="goodAt-container" v-if="showFlag" @click.stop>
     <div class="box-bj border-1px">
-    <div class="dialog-container">
-      <div class="dialog-title">善长</div>
-      <cube-checkbox-group v-model="checkList" :options="getOptions" />
-      <div class="btn-box">
-        <div class="cancel" @click="cancelBox">取消</div>
-        <div class="makeSure" @click="confimBox">确定</div>
+      <div class="dialog-container">
+        <div class="dialog-title">擅长</div>
+        <cube-checkbox-group v-model="checkList" :options="getOptions" />
+        <div class="btn-box">
+          <div class="cancel" @click="cancelBox">取消</div>
+          <div class="makeSure" @click="confimBox">确定</div>
+        </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -57,7 +57,7 @@ export default {
   props:{
       title:{
         type:String,
-        default:'善长'
+        default:'擅长'
       },
       getOptions:{
         type:Array,
@@ -95,14 +95,13 @@ export default {
 }
 </script>
 <style lang='stylus' scoped>
-
 .goodAt-container
   position fixed
   left 0
   right 0
   top 0
   bottom 0
-  background rgba(0,0,0,0.5)
+  background rgba(0, 0, 0, 0.5)
   padding-top 25px
   .box-bj
     width 95%
@@ -123,5 +122,4 @@ export default {
       text-align center
       color #FDC705
       font-size 17px
-        
 </style>
