@@ -1,10 +1,10 @@
 <template>
-	<div>
+	<div class="web-container">
+		<!-- <cube-scroll> -->
 		<cube-form :model="model" @validate="validateHandler" @submit="submitHandler">
 			<cube-form-group>
 				<!-- 照片上传验证-input -->
-				<cube-upload ref="upload" :action="action" :simultaneous-uploads="1" :process-file="processFile" @file-submitted="fileSubmitted" :max=1 />
-				<!-- <cube-upload action="/api/getskillAndtype" :simultaneous-uploads="1" @files-added="filesAdded" /> -->
+				<cube-upload ref="upload" :action="action" :simultaneous-uploads="1" :process-file="processFile" @file-submitted="fileSubmitted" :max=1 @files-added="fileAdded" v-model="fileArr" />
 				<!-- 手机号码-input -->
 				<cube-form-item :field="fields[1]"></cube-form-item>
 				<!-- 名字-input -->
@@ -17,9 +17,8 @@
 				</cube-form-item>
 				<!-- 生日 时间date-picker -->
 				<cube-form-item :field="fields[5]">
-					<cube-button @click="showDatePicker" :class="{active:isBlack}">{{model.dateValue||'生日'}}</cube-button>
+					<cube-button @click="showDatePicker" :class="{active:model.dateValue}">{{model.dateValue||'生日'}}</cube-button>
 					<i class="cube-select-icon"></i>
-					<date-picker ref="datePicker" :min="[2008, 8, 8]" :max="[2020, 10, 20]" @select="dateSelectHandler"></date-picker>
 				</cube-form-item>
 				<!-- 所在地 -->
 				<div style="position:relative" :class="{black: model.pcaValue.length}">
@@ -43,12 +42,13 @@
 			</cube-form-group>
 			<cube-form-group>
 				<div class="sub-box">
-					<cube-button type="submit" :class="{black:!valid}">提交申请</cube-button>
+					<cube-button type="submit" :class="{blacks:!valid}">提交申请</cube-button>
 				</div>
 			</cube-form-group>
-			<GoodAt ref="checkboxGroups" @confimSure="makeSure" :getOptions="op"></GoodAt>
 		</cube-form>
-		<!-- <router-view></router-view> -->
+		<!-- </cube-scroll> -->
+		<GoodAt ref="checkboxGroups" @confimSure="makeSure" :getOptions="op"></GoodAt>
+		<date-picker ref="datePicker" :min="[2008, 8, 8]" :max="[2020, 10, 20]" @select="dateSelectHandler"></date-picker>
 	</div>
 </template>
 
@@ -113,10 +113,11 @@ export default {
 	data() {
 		let that = this
 		return {
+			fileArr:[],
 			isBlack:false,
 			action:{
 				target:`${root}/getskillAndtype`,
-				 prop: 'base64Value'
+				prop: 'base64Value'
 			},
 			validity: {},
 			valid: false,
@@ -167,6 +168,9 @@ export default {
 						required: true,
 						type: 'tel',
 						max: 11
+					},
+					messages:{
+						required:'提交失败，请信息修改后再提交'
 					}
 				},
 				{
@@ -304,6 +308,11 @@ export default {
 		})
 	},
 	methods: {
+		fileAdded(){
+			const file = this.fileArr[0]
+			file && this.$refs.upload.removeFile(file)
+			this.model.uploadValue = this.fileArr[0]
+		},
     processFile(file, next) {
       compress(file, {
         compress: {
@@ -321,15 +330,15 @@ export default {
 		showClose(title) {
 			this.$createDialog({
 				type: 'alert',
-				icon: 'cubeic-alert',
+				icon: 'cubeic-sad',
 				showClose: true,
 				title: title,
+				confirmBtn: {
+          text: '我知道了',
+          active: true
+        },
 				onClose: () => {
-					this.$createToast({
-						type: 'warn',
-						time: 1000,
-						txt: '知道了'
-					}).show()
+					
 				}
 			}).show()
 		},
@@ -443,6 +452,8 @@ bg-img($url)
 		background-repeat no-repeat
 .icon-box
 	width 25px
+	position absolute
+	top 15px
 .inputValue
 	width 20px
 	height 22px
@@ -507,7 +518,32 @@ bg-img($url)
 	.cube-validator-content
 		.cube-btn
 			color #282828 !important
-.black
+.blacks
 	background rgba(187, 187, 187, 1) !important
 	color #282828 !important
+.cube-upload-file-status.cubeic-right
+	display none !important
+.cube-upload-file-def
+	border-radius 100% !important
+.cube-upload-file-def
+	& > .cubeic-wrong, .cube-upload-file_stat
+		display none !important
+.web-container
+	overflow hidden
+	.cube-upload-def
+		height 110px
+		.cube-upload-def .cube-upload-btn, .cube-upload-file
+			position absolute
+.cube-form-item_invalid
+	.cube-input
+		border-bottom 1px solid red
+		border-radius 0
+.cube-btn.cube-btn_active::after, .cube-btn:active::after
+	border 0px solid #fff !important
+.cubeic-sad
+	width 25px
+	height 25px
+	border 0 solid transparent !important
+	bg-img('../src/assets/images/sad-icon')
+	background-color #fff !important
 </style>

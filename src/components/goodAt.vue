@@ -103,6 +103,7 @@ export default {
   bottom 0
   background rgba(0, 0, 0, 0.5)
   padding-top 25px
+  z-index 999
   .box-bj
     width 95%
     margin 0 auto

@@ -12,30 +12,30 @@ import {
   Style,
   Button,
   CheckboxGroup,
-  Radio,
+  // Radio,
   Input,
   Textarea,
   Select,
-  Switch,
-  Rate,
+  // Switch,
+  // Rate,
   Validator,
   Form,
   Loading,
-  Tip,
+  // Tip,
   Popup,
   Toast,
   Picker,
-  CascadePicker,
+  // CascadePicker,
   DatePicker,
-  SegmentPicker,
+  // SegmentPicker,
   TimePicker,
   Dialog,
-  ActionSheet,
-  Drawer,
+  // ActionSheet,
+  // Drawer,
   Scroll,
-  Slide,
+  // Slide,
   IndexList,
-  Swipe,
+  // Swipe,
   Upload,
 } from 'cube-ui';
 import App from './App';
@@ -43,29 +43,29 @@ import router from './router';
 
 Vue.use(Button);
 Vue.use(CheckboxGroup);
-Vue.use(Radio);
+// Vue.use(Radio);
 Vue.use(Input);
 Vue.use(Textarea);
 Vue.use(Select);
-Vue.use(Switch);
-Vue.use(Rate);
+// Vue.use(Switch);
+// Vue.use(Rate);
 Vue.use(Validator);
 Vue.use(Form);
 Vue.use(Loading);
-Vue.use(Tip);
+// Vue.use(Tip);
 Vue.use(Toast);
 Vue.use(Picker);
-Vue.use(CascadePicker);
+// Vue.use(CascadePicker);
 Vue.use(DatePicker);
-Vue.use(SegmentPicker);
+// Vue.use(SegmentPicker);
 Vue.use(TimePicker);
 Vue.use(Dialog);
-Vue.use(ActionSheet);
-Vue.use(Drawer);
+// Vue.use(ActionSheet);
+// Vue.use(Drawer);
 Vue.use(Scroll);
-Vue.use(Slide);
+// Vue.use(Slide);
 Vue.use(IndexList);
-Vue.use(Swipe);
+// Vue.use(Swipe);
 Vue.use(Upload);
 
 Vue.config.productionTip = false;
